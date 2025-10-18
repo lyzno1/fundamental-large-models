@@ -5,11 +5,12 @@ fundamentals_large_models
 从零搭建 Transformer 架构的作业代码库。
 """
 
-from .config import DataConfig, ExperimentConfig, ModelConfig, OptimConfig
+from .config import DataConfig, ExperimentConfig, ModelConfig, OptimConfig, TokenizerConfig
 
 __all__ = [
     "DataConfig",
     "ExperimentConfig",
     "ModelConfig",
     "OptimConfig",
+    "TokenizerConfig",
 ]

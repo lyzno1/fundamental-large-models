@@ -17,13 +17,15 @@ class DataConfig:
     """Dataset and preprocessing configuration."""
 
     dataset_name: str = "wikitext"
-    subset: str = "wikitext-2-v1"
+    subset: Optional[str] = "wikitext-2-v1"
+    data_dir: Optional[Path] = None
     text_field: str = "text"
     max_length: int = 128
     train_split: str = "train"
     val_split: str = "validation"
     test_split: Optional[str] = "test"
     lowercase: bool = True
+    limit_examples: Optional[int] = None
 
 
 @dataclass
@@ -56,3 +58,17 @@ class OptimConfig:
     scheduler: str = "cosine"
     log_interval: int = 100
     eval_interval: int = 500
+
+
+@dataclass
+class TokenizerConfig:
+    """Tokenizer configuration for building vocabularies."""
+
+    type: str = "basic"
+    vocab_file: Optional[Path] = None
+    lowercase: bool = True
+    min_freq: int = 1
+    pad_token: str = "<pad>"
+    unk_token: str = "<unk>"
+    bos_token: str = "<bos>"
+    eos_token: str = "<eos>"

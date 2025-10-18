@@ -1,44 +1,52 @@
 experiment:
-  name: base-encoder
+  name: local-encoder
   seed: 42
-  output_dir: results/base
+  output_dir: results/local_encoder
 
 data:
-  dataset_name: wikitext
-  subset: wikitext-2-v1
+  dataset_name: local_text
+  data_dir: data/local_corpus
+  subset: null
   text_field: text
-  max_length: 128
+  max_length: 64
   train_split: train
   val_split: validation
   test_split: test
+  lowercase: true
+  limit_examples: 400
 
 tokenizer:
   type: basic
   vocab_file: null
   lowercase: true
+  min_freq: 1
+  pad_token: "<pad>"
+  unk_token: "<unk>"
+  bos_token: "<bos>"
+  eos_token: "<eos>"
 
 model:
-  vocab_size: 50000
+  vocab_size: 0  # set dynamically after tokenizer creation
   embedding_dim: 128
   num_heads: 4
   num_layers: 2
   ff_dim: 512
   dropout: 0.1
-  max_position_embeddings: 512
+  max_position_embeddings: 256
   layer_norm_eps: 1.0e-5
   use_decoder: false
 
 optimization:
-  batch_size: 32
-  num_epochs: 10
+  batch_size: 8
+  num_epochs: 15
   learning_rate: 3.0e-4
   weight_decay: 0.01
   betas: [0.9, 0.98]
   eps: 1.0e-9
   grad_clip: 1.0
-  warmup_steps: 4000
+  warmup_steps: 50
   scheduler: cosine
 
 logging:
-  log_interval: 100
-  eval_interval: 500
+  log_interval: 10
+  eval_interval: 200

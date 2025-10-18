@@ -1,0 +1,6 @@
+validation checks monitor whether the model overfits the small training sample.
+attention weights should concentrate on relevant tokens for accurate predictions.
+keeping batch sizes small reduces memory pressure on constrained hardware.
+logging losses to disk enables later visualization and reporting.
+regular evaluations guide hyperparameter tuning during the assignment.
+documenting experiment settings in metadata files improves reproducibility.

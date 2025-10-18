@@ -1,6 +1,6 @@
 ## 项目概述
 
-本仓库用于《大模型基础与应用》期中作业，目标是手工搭建一个可训练的小规模 Transformer，并在小数据集上完成验证、实验分析与文档撰写。当前仓库完成了基础脚手架与实验配置，后续将在此基础上补充完整实现与实验结果。
+本仓库用于《大模型基础与应用》期中作业，目标是手工搭建一个可训练的小规模 Transformer，并在小数据集上完成验证、实验分析与文档撰写。当前版本已经接入本地轻量语料、完善训练流程与元数据日志，后续可在此基础上扩展实验与报告。
 
 ## 快速上手
 
@@ -14,20 +14,27 @@
   ```bash
   uv pip install -r requirements.txt
   ```
-- 运行示例训练（使用合成数据校验流程）：
+- 运行示例训练（使用本地轻量语料，默认配置适合笔记本）：
   ```bash
   ./scripts/run.sh configs/base.yaml
   ```
 
-> 说明：目前默认的 `DummyLanguageModelingDataset` 仅用于验证流程与网络结构，请在后续实验阶段替换为真实数据集（如 WikiText-2）。
+训练完成后，会在 `results/local_encoder/` 生成：
+
+- `metadata.json`：记录实验、数据、模型、优化器与 tokenizer 配置。
+- `metrics.json`：逐 epoch 的训练 / 验证 loss。
+- `loss_curve.png`：收敛曲线，可直接引用到报告。
+- `model.pt`：包含模型、优化器与调度器权重，便于后续继续训练。
+- `tokenizer.json`：与当前语料对应的词表。
 
 ## 仓库结构
 
-- `configs/`：实验配置文件（默认 `base.yaml` 对应表 3 超参数设定）。
+- `configs/`：实验配置文件（默认 `base.yaml` 对应课程表 3 的轻量设置）。
+- `data/local_corpus/`：自带的小规模语言建模数据集（已拆分 train/validation/test），同时提供 `local_corpus.zip` 便于提交。
 - `docs/`：作业说明与架构文档。
-- `results/`：训练曲线与指标输出位置（当前放置 `.gitkeep` 以追踪目录）。
+- `results/`：训练曲线、模型权重与实验指标的输出目录。
 - `scripts/run.sh`：统一的训练入口脚本，封装了环境变量与命令行参数。
-- `src/fundamentals_large_models/`：核心源码，包含配置解析、模型组件与训练流程。
+- `src/fundamentals_large_models/`：核心源码，包含配置解析、数据流水线、模型组件与训练流程。
 - `main.py`：简易入口，等价于执行 `python -m fundamentals_large_models.train`。
 
 ## 模块划分
@@ -39,10 +46,19 @@
 | `model/blocks.py` | 搭建带残差与 LayerNorm 的 Encoder Block。 |
 | `model/positional_encoding.py` | 提供经典正弦位置编码。 |
 | `model/transformer.py` | 组合得到最小可训练的 Encoder-only Transformer。 |
-| `train.py` | 读取配置、构建模型与优化器、执行训练循环。 |
+| `data/dataset.py` | 构建可复现的 tokenizer、加载本地/ HuggingFace 语料并切分序列。 |
+| `train.py` | 读取配置、构建模型与优化器、执行训练与评估循环、输出曲线与模型。 |
+
+## 训练特性速览
+
+- 支持本地轻量语料快速迭代，默认 `batch_size=8`、`seq_len=64` 适配常见笔记本。
+- `AdamW + 梯度裁剪 + warmup + cosine decay`，可根据配置快速切换。
+- 每轮自动在 validation split 评估，并把 loss 曲线保存至 `loss_curve.png`。
+- 自动写入 `metadata.json`、`metrics.json`、`model.pt`、`tokenizer.json` 等复现实验所需资产。
+- Tokenizer 词表支持缓存 / 加载，保证多次运行的一致性。
 
 ## 下一步计划
 
-- 接入真实小规模语料（WikiText-2 / Tiny Shakespeare 等），完善 `DataLoader` 与 Tokenizer。
-- 补充学习率调度、梯度裁剪等训练稳定性技巧，并保存训练曲线至 `results/`。
-- 完成消融实验与报告撰写（LaTeX），确保 README 提供完整复现实验流程。
+- 根据课程要求扩展到 Encoder-Decoder 结构，并在更复杂任务上验证。
+- 设计完整的消融实验（去除位置编码、修改头数/FFN 维度等），补充结果表格。
+- 在 `results/` 中整理多组实验（含随机种子），并撰写 LaTeX 报告不少于 5 页。
