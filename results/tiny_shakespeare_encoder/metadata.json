@@ -1,0 +1,56 @@
+{
+  "experiment": {
+    "name": "tiny-shakespeare-encoder",
+    "seed": 42,
+    "output_dir": "results/tiny_shakespeare_encoder"
+  },
+  "data": {
+    "dataset_name": "local_text",
+    "subset": null,
+    "data_dir": "data/tiny_shakespeare",
+    "text_field": "text",
+    "max_length": 128,
+    "train_split": "train",
+    "val_split": "validation",
+    "test_split": "test",
+    "lowercase": true,
+    "limit_examples": null
+  },
+  "model": {
+    "vocab_size": 21951,
+    "embedding_dim": 128,
+    "num_heads": 4,
+    "num_layers": 2,
+    "ff_dim": 512,
+    "dropout": 0.1,
+    "layer_norm_eps": 1e-05,
+    "max_position_embeddings": 256,
+    "use_decoder": false
+  },
+  "optimization": {
+    "batch_size": 16,
+    "num_epochs": 10,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.01,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "eps": 1e-09,
+    "grad_clip": 1.0,
+    "warmup_steps": 50,
+    "scheduler": "cosine",
+    "log_interval": 100,
+    "eval_interval": 500
+  },
+  "tokenizer": {
+    "type": "basic",
+    "vocab_file": "results/tiny_shakespeare_encoder/tokenizer.json",
+    "lowercase": true,
+    "min_freq": 1,
+    "pad_token": "<pad>",
+    "unk_token": "<unk>",
+    "bos_token": "<bos>",
+    "eos_token": "<eos>"
+  }
+}
