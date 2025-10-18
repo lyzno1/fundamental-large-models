@@ -4,57 +4,59 @@
 from __future__ import annotations
 
 import argparse
-import random
 import zipfile
 from pathlib import Path
 from typing import Tuple
 
-from datasets import load_dataset  # type: ignore
-
 DEFAULT_OUTPUT = Path("data/tiny_shakespeare")
+TINY_SHAKESPEARE_SOURCES = [
+    "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt",
+    "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tiny_shakespeare/input.txt",
+]
 
 
-def split_text(text: str, val_ratio: float, test_ratio: float, seed: int) -> Tuple[str, str, str]:
-    rng = random.Random(seed)
+def split_text(text: str, val_ratio: float, test_ratio: float) -> Tuple[str, str, str]:
     total = len(text)
     val_len = int(total * val_ratio)
     test_len = int(total * test_ratio)
     train_len = total - val_len - test_len
 
-    indices = list(range(total))
-    rng.shuffle(indices)
-
-    train_idx = set(indices[:train_len])
-    val_idx = set(indices[train_len : train_len + val_len])
-    test_idx = set(indices[train_len + val_len :])
-
-    train_chars = []
-    val_chars = []
-    test_chars = []
-    for i, ch in enumerate(text):
-        if i in train_idx:
-            train_chars.append(ch)
-        elif i in val_idx:
-            val_chars.append(ch)
-        else:
-            test_chars.append(ch)
-
-    return "".join(train_chars), "".join(val_chars), "".join(test_chars)
+    train_text = text[:train_len]
+    val_text = text[train_len : train_len + val_len]
+    test_text = text[train_len + val_len :]
+    return train_text, val_text, test_text
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Prepare Tiny Shakespeare dataset.")
+    parser = argparse.ArgumentParser(
+        description="Prepare Tiny Shakespeare dataset from public raw text sources."
+    )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--val-ratio", type=float, default=0.05)
     parser.add_argument("--test-ratio", type=float, default=0.05)
-    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
-    print("Downloading tiny_shakespeare via Hugging Face datasets...")
-    dataset = load_dataset("tiny_shakespeare")
-    raw_text = dataset["train"][0]["text"]
+    raw_text = None
+    last_error: Exception | None = None
+    for url in TINY_SHAKESPEARE_SOURCES:
+        try:
+            print(f"Attempting download from {url}")
+            import urllib.request
 
-    train_text, val_text, test_text = split_text(raw_text, args.val_ratio, args.test_ratio, args.seed)
+            with urllib.request.urlopen(url) as response:
+                raw_bytes = response.read()
+            if not raw_bytes:
+                raise RuntimeError("empty response")
+            raw_text = raw_bytes.decode("utf-8")
+            break
+        except Exception as exc:  # pragma: no cover - network failure
+            print(f"Failed to download from {url}: {exc}")
+            last_error = exc
+
+    if raw_text is None:
+        raise RuntimeError("Unable to download Tiny Shakespeare dataset.") from last_error
+
+    train_text, val_text, test_text = split_text(raw_text, args.val_ratio, args.test_ratio)
 
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)

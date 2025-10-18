@@ -14,7 +14,7 @@
   ```bash
   uv pip install -r requirements.txt
   ```
-- 下载 Tiny Shakespeare 并拆分为 train / validation / test（首次必跑，需联网）：
+- 下载 Tiny Shakespeare 并拆分为 train / validation / test（首次必跑，需联网，脚本会从 Karpathy 的 char-rnn 仓库拉取原始文本）：
   ```bash
   uv run python scripts/prepare_tiny_shakespeare.py
   ```

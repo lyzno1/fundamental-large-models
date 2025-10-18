@@ -18,7 +18,7 @@
 
 ## 2. 仓库当前内容
 
-- 基于 `uv` 初始化的 Python 项目结构，满足课程要求的目录布局。仓库附带 `scripts/prepare_tiny_shakespeare.py`，首次运行会联网下载 Hugging Face `tiny_shakespeare` 数据集并缓存至 `data/tiny_shakespeare/`（脚本会自动写出 zip 压缩包，可在提交前纳入仓库）。
+- 基于 `uv` 初始化的 Python 项目结构，满足课程要求的目录布局。仓库附带 `scripts/prepare_tiny_shakespeare.py`，首次运行会联网从 Karpathy `char-rnn` 仓库拉取 Tiny Shakespeare 原始文本并缓存至 `data/tiny_shakespeare/`（脚本会自动写出 zip 压缩包，可在提交前纳入仓库）。
 - `configs/base.yaml` 默认指向上述 Tiny Shakespeare 数据，配置 `seq_len=128`、`batch_size=16`、`warmup+cosine` 调度，适合笔记本快速验证。
 - `src/fundamentals_large_models/` 下的核心模块均已实现并接入训练流水线：
   - `model/*.py`：注意力、前馈、Block、位置编码与 Encoder-only Transformer。
