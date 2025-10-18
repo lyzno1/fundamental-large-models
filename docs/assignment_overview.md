@@ -25,13 +25,14 @@
   - `data/dataset.py`：可复现 tokenizer、局部文本数据加载与序列切分。
   - `train.py`：读取配置、构造 scheduler、执行训练/验证循环、写出 `metadata.json`、`metrics.json`、`loss_curve.png`、`model.pt`、`tokenizer.json`。
 - `scripts/run.sh`：统一入口，默认执行 `python -m fundamentals_large_models.train --config configs/base.yaml`。
-- `results/local_encoder/`（运行后生成）：存放训练曲线、模型权重与实验日志，满足代码开源的可复现要求。
+- `results/tiny_shakespeare_encoder/`（运行后生成）：存放训练曲线、模型权重与实验日志，满足代码开源的可复现要求。
+- `configs/ablation_no_positional_encoding.yaml`、`configs/ablation_reduced_capacity.yaml`：提供位置编码关闭、模型容量缩减等消融实验配置。
 
 ## 3. 后续工作路线
 
 1. **扩展实验规模**：在保留本地小语料的基础上，增加 Hugging Face 公开数据集（如 WikiText-2），并在配置中支持切换。
 2. **消融与对比实验**：
-   - 去除位置编码、变更注意力头数 / FFN 维度；
+   - 运行 `ablation_no_positional_encoding.yaml` 去除位置编码、`ablation_reduced_capacity.yaml` 减少注意力头数 / FFN 维度，并整理指标差异；
    - 引入 decoder block，构建 encoder-decoder 版本提升得分上限。
 3. **训练细节强化**：补充梯度裁剪可视化、参数统计、断点恢复脚本等高级特性。
 4. **结果整理**：在 `results/` 下按实验编号保存曲线与表格，统一命名便于报告引用。

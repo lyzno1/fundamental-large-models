@@ -1,7 +1,7 @@
 experiment:
-  name: tiny-shakespeare-encoder
+  name: tiny-shakespeare-no-pos
   seed: 42
-  output_dir: results/tiny_shakespeare_encoder
+  output_dir: results/tiny_shakespeare_no_pos
 
 data:
   dataset_name: local_text
@@ -26,7 +26,7 @@ tokenizer:
   eos_token: "<eos>"
 
 model:
-  vocab_size: 0  # set dynamically after tokenizer creation
+  vocab_size: 0
   embedding_dim: 128
   num_heads: 4
   num_layers: 2
@@ -35,7 +35,7 @@ model:
   max_position_embeddings: 256
   layer_norm_eps: 1.0e-5
   use_decoder: false
-  use_positional_encoding: true
+  use_positional_encoding: false
 
 optimization:
   batch_size: 16

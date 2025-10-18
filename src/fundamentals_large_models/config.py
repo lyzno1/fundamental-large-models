@@ -41,6 +41,7 @@ class ModelConfig:
     layer_norm_eps: float = 1e-5
     max_position_embeddings: int = 512
     use_decoder: bool = False
+    use_positional_encoding: bool = True
 
 
 @dataclass

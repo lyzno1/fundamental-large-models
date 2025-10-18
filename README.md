@@ -61,6 +61,16 @@
 - 自动写入 `metadata.json`、`metrics.json`、`model.pt`、`tokenizer.json` 等复现实验所需资产。
 - Tokenizer 词表支持缓存 / 加载，保证多次运行的一致性。
 
+## 消融实验示例
+
+为满足作业“手工 Transformer + 消融实验”要求，仓库提供以下配置（结果目录位于 `results/` 对应子文件夹）：
+
+- `./scripts/run.sh configs/base.yaml`：基线模型（2 层 Encoder、4 头注意力、含位置编码）。
+- `./scripts/run.sh configs/ablation_no_positional_encoding.yaml`：移除正弦位置编码，观察性能下降幅度。
+- `./scripts/run.sh configs/ablation_reduced_capacity.yaml`：保持位置编码但将注意力头数减半、FFN 缩小，模拟容量不足。
+
+运行完成后，可比较各自的 `metrics.json` / `loss_curve.png`，在报告中整理表格或折线图，并描述差异原因。
+
 ## 下一步计划
 
 - 根据课程要求扩展到 Encoder-Decoder 结构，并在更复杂任务上验证。

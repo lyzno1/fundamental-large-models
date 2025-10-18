@@ -17,8 +17,10 @@ class EncoderOnlyTransformer(nn.Module):
         super().__init__()
         self.config = config
         self.token_embedding = nn.Embedding(config.vocab_size, config.embedding_dim)
-        self.positional_encoding = SinusoidalPositionalEncoding(
-            config.embedding_dim, config.max_position_embeddings
+        self.positional_encoding = (
+            SinusoidalPositionalEncoding(config.embedding_dim, config.max_position_embeddings)
+            if config.use_positional_encoding
+            else None
         )
         self.layers = nn.ModuleList(
             [
@@ -39,7 +41,8 @@ class EncoderOnlyTransformer(nn.Module):
         self, input_ids: torch.Tensor, attention_mask: Optional[torch.Tensor] = None
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         x = self.token_embedding(input_ids)
-        x = self.positional_encoding(x)
+        if self.positional_encoding is not None:
+            x = self.positional_encoding(x)
         attn_maps = []
         for layer in self.layers:
             x, attn = layer(x, attention_mask)

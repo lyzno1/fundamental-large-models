@@ -27,7 +27,13 @@ from .model.transformer import EncoderOnlyTransformer
 
 plt.switch_backend("agg")
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# Prefer CUDA, then Apple MPS, else CPU.
+if torch.cuda.is_available():
+    DEVICE = torch.device("cuda")
+elif getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+    DEVICE = torch.device("mps")
+else:
+    DEVICE = torch.device("cpu")
 
 
 def set_seed(seed: int) -> None:
