@@ -70,6 +70,7 @@
 - `./scripts/run.sh configs/ablation_reduced_capacity.yaml`：保持位置编码但将注意力头数减半、FFN 缩小，模拟容量不足。
 
 运行完成后，可比较各自的 `metrics.json` / `loss_curve.png`，在报告中整理表格或折线图，并描述差异原因。
+三组实验的验证 loss 摘要已记录于 `docs/experiment_summary.md`。
 
 ## 下一步计划
 

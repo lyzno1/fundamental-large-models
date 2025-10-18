@@ -27,6 +27,7 @@
 - `scripts/run.sh`：统一入口，默认执行 `python -m fundamentals_large_models.train --config configs/base.yaml`。
 - `results/tiny_shakespeare_encoder/`（运行后生成）：存放训练曲线、模型权重与实验日志，满足代码开源的可复现要求。
 - `configs/ablation_no_positional_encoding.yaml`、`configs/ablation_reduced_capacity.yaml`：提供位置编码关闭、模型容量缩减等消融实验配置。
+- `docs/experiment_summary.md`：记录基线与两组消融实验的验证损失，便于报告直接引用。
 
 ## 3. 后续工作路线
 
