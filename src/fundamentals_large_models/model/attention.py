@@ -28,7 +28,7 @@ def scaled_dot_product_attention(
     d_k = query.size(-1)
     scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(d_k)
     if mask is not None:
-        scores = scores.masked_fill(mask == 0, float("-inf"))
+        scores = scores.masked_fill(~mask, float("-inf"))
     attn = torch.softmax(scores, dim=-1)
     attn = torch.nan_to_num(attn, nan=0.0)
     context = torch.matmul(attn, value)
@@ -70,7 +70,8 @@ class MultiHeadSelfAttention(nn.Module):
         v = self._reshape(v)
 
         if mask is not None:
-            mask = mask.unsqueeze(1)
+            # reshape to (batch, heads=1, query_len=1, key_len) for broadcasting
+            mask = mask.unsqueeze(1).unsqueeze(2).to(dtype=torch.bool)
 
         context, attn = scaled_dot_product_attention(q, k, v, mask)
         context = context.transpose(1, 2).contiguous().view(batch_size, seq_len, self.embed_dim)
