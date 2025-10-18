@@ -71,9 +71,3 @@
 
 运行完成后，可比较各自的 `metrics.json` / `loss_curve.png`，在报告中整理表格或折线图，并描述差异原因。
 三组实验的验证 loss 摘要已记录于 `docs/experiment_summary.md`。
-
-## 下一步计划
-
-- 根据课程要求扩展到 Encoder-Decoder 结构，并在更复杂任务上验证。
-- 设计完整的消融实验（去除位置编码、修改头数/FFN 维度等），补充结果表格。
-- 在 `results/` 中整理多组实验（含随机种子），并撰写 LaTeX 报告不少于 5 页。
