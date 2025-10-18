@@ -1,6 +1,6 @@
 ## 项目概述
 
-本仓库用于《大模型基础与应用》期中作业，目标是手工搭建一个可训练的小规模 Transformer，并在小数据集上完成验证、实验分析与文档撰写。当前版本已经接入本地轻量语料、完善训练流程与元数据日志，后续可在此基础上扩展实验与报告。
+本仓库用于《大模型基础与应用》期中作业，目标是手工搭建一个可训练的小规模 Transformer，并在小数据集上完成验证、实验分析与文档撰写。当前版本默认使用 Tiny Shakespeare（Hugging Face: `tiny_shakespeare`）作为示例数据集，并在本地缓存拆分后的文本、训练流程与元数据日志，后续可在此基础上扩展实验与报告。
 
 ## 快速上手
 
@@ -14,12 +14,16 @@
   ```bash
   uv pip install -r requirements.txt
   ```
-- 运行示例训练（使用本地轻量语料，默认配置适合笔记本）：
+- 下载 Tiny Shakespeare 并拆分为 train / validation / test（首次必跑，需联网）：
+  ```bash
+  uv run python scripts/prepare_tiny_shakespeare.py
+  ```
+- 运行示例训练（使用 Tiny Shakespeare 子集，默认配置适合笔记本）：
   ```bash
   ./scripts/run.sh configs/base.yaml
   ```
 
-训练完成后，会在 `results/local_encoder/` 生成：
+训练完成后，会在 `results/tiny_shakespeare_encoder/` 生成：
 
 - `metadata.json`：记录实验、数据、模型、优化器与 tokenizer 配置。
 - `metrics.json`：逐 epoch 的训练 / 验证 loss。
@@ -29,8 +33,8 @@
 
 ## 仓库结构
 
-- `configs/`：实验配置文件（默认 `base.yaml` 对应课程表 3 的轻量设置）。
-- `data/local_corpus/`：自带的小规模语言建模数据集（已拆分 train/validation/test），同时提供 `local_corpus.zip` 便于提交。
+- `configs/`：实验配置文件（默认 `base.yaml` 对应 Tiny Shakespeare 轻量设置）。
+- `data/tiny_shakespeare/`：运行 `prepare_tiny_shakespeare.py` 后生成的本地数据（脚本会自动导出 `tiny_shakespeare.zip`，推荐在提交前将其加入仓库）。
 - `docs/`：作业说明与架构文档。
 - `results/`：训练曲线、模型权重与实验指标的输出目录。
 - `scripts/run.sh`：统一的训练入口脚本，封装了环境变量与命令行参数。
@@ -51,7 +55,7 @@
 
 ## 训练特性速览
 
-- 支持本地轻量语料快速迭代，默认 `batch_size=8`、`seq_len=64` 适配常见笔记本。
+- 支持 Tiny Shakespeare 快速迭代，默认 `batch_size=16`、`seq_len=128` 适配常见笔记本。
 - `AdamW + 梯度裁剪 + warmup + cosine decay`，可根据配置快速切换。
 - 每轮自动在 validation split 评估，并把 loss 曲线保存至 `loss_curve.png`。
 - 自动写入 `metadata.json`、`metrics.json`、`model.pt`、`tokenizer.json` 等复现实验所需资产。

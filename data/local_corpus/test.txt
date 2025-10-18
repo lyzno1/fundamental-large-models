@@ -1,5 +1,0 @@
-the held out test split assesses generalization after hyperparameters are fixed.
-position embeddings remain essential even for short toy corpora.
-well structured repositories simplify grading and future extensions.
-saving checkpoints allows resuming experiments without starting from scratch.
-lightweight datasets keep iteration fast during the development cycle.

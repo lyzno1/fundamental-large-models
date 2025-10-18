@@ -1,19 +1,19 @@
 experiment:
-  name: local-encoder
+  name: tiny-shakespeare-encoder
   seed: 42
-  output_dir: results/local_encoder
+  output_dir: results/tiny_shakespeare_encoder
 
 data:
   dataset_name: local_text
-  data_dir: data/local_corpus
+  data_dir: data/tiny_shakespeare
   subset: null
   text_field: text
-  max_length: 64
+  max_length: 128
   train_split: train
   val_split: validation
   test_split: test
   lowercase: true
-  limit_examples: 400
+  limit_examples: null
 
 tokenizer:
   type: basic
@@ -37,8 +37,8 @@ model:
   use_decoder: false
 
 optimization:
-  batch_size: 8
-  num_epochs: 15
+  batch_size: 16
+  num_epochs: 10
   learning_rate: 3.0e-4
   weight_decay: 0.01
   betas: [0.9, 0.98]
